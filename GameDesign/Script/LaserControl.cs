@@ -6,11 +6,8 @@ using UnityEngine;
 public class LaserControl : MonoBehaviour
 {
     // Start is called before the first frame update
-    public Vector2 Speed = new Vector2(0, 6);
-    void Start()
-    {
-        
-    }
+    [field:SerializeField]
+    public Vector2 Speed { get; private set; } = new Vector2(0, -5);
 
     // Update is called once per frame
     void Update()
@@ -18,13 +15,12 @@ public class LaserControl : MonoBehaviour
         moveLaser();
     }
 
-
     private void moveLaser()
     {
-
         float newX = transform.position.x + (Speed.x * Time.deltaTime);
         float newY = transform.position.y + (Speed.y * Time.deltaTime);
         transform.position = new Vector2(newX, newY);
-
     }
+
+
 }
