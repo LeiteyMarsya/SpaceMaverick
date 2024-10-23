@@ -5,7 +5,19 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     [field: SerializeField]
-    public PlayerController PlayerTemplate { get; private set; } // Fix the class name here
+    public List<EnemyShipController> EnemyTypes { get; private set; }
+
+    [field:SerializeField]
+    public Transform EnemySpawnPoint {  get; private set; }
+
+    [field:SerializeField]
+    public List<Transform> WayPoints { get; set; }
+
+    [field: SerializeField]
+    public EnemySpawner  EnemySpawner {  get; private set; }
+
+    [field: SerializeField]
+    public PlayerController PlayerTemplate { get; private set; }
 
     [field: SerializeField]
     public Transform PlayerSpawnPoint { get; private set; }
@@ -15,11 +27,21 @@ public class GameController : MonoBehaviour
 
     [field: SerializeField]
     public float SpawnAt { get; private set; } = -1;
+    [field: SerializeField]
+    public List<EnemyShipController> enemies { get; private set; }
 
     // Start is called before the first frame update
     void Start()
     {
         SpawnPlayer();
+        List<Transform> waypoints = new() { WayPoints[0], WayPoints[1], WayPoints[2] };
+        IEnemyShip enemy = new EnemyShip(EnemyTypes[0], waypoints, EnemySpawnPoint.position);
+
+        List<IEnemyShip> enemyShips = new()
+        {
+            enemy, enemy, enemy
+        };
+        EnemySpawner.EnqueueEnemies(enemies);
     }
 
     // Update is called once per frame
