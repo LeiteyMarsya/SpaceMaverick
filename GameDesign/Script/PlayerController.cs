@@ -6,10 +6,12 @@ public class PlayerController : MonoBehaviour
 {
     // Start is called before the first frame update
     [field: SerializeField]
-    public Sprite LeanLeft {  get; private set; }
+    public Sprite LeanLeft { get; private set;}
+    [field: SerializeField]
+    public Sprite LeanRight { get; private set;}
 
     [field: SerializeField]
-    public Sprite LeanRight { get; private set; }
+    public Sprite Foward { get; private set; }
 
     [field: SerializeField]
     public float DamageBoost { get; private set; } = 3;
@@ -54,6 +56,7 @@ public class PlayerController : MonoBehaviour
         HandleFire();
         HandleDamageBoost();
         MoveShip();
+        HandleSprite();
     }
 
     private void HandleDamageBoost()
@@ -62,21 +65,12 @@ public class PlayerController : MonoBehaviour
         DamageBoost = Mathf.Max(0, DamageBoost);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        AsteroidController asAsteroid = collision.gameObject.GetComponent<AsteroidController>();
-        if (asAsteroid != null && DamageBoost <= 0)
-        {
-            GameController.DestroyPlayer(this); // This will work if GameController is properly assigned
-        }
-    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        AsteroidController asAsteroid = collision.GetComponent<AsteroidController>();
-        if (asAsteroid != null)
+        PlayerImpactor asImpactor = collision.GetComponent<PlayerImpactor>();
+        if (asImpactor != null && DamageBoost <= 0)
         {
-            Debug.Log("Collision detected, destroying player!");
             GameController.DestroyPlayer(this); // Use the GameController instance
         }
     }
@@ -90,7 +84,21 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Laser fired!");
         }
     }
-
+    private void HandleSprite()
+    {
+        if (velocity.x < 0)
+        {
+            GetComponent<SpriteRenderer>().sprite = LeanLeft;
+        }
+        else if (velocity.x > 0)
+        {
+            GetComponent<SpriteRenderer>().sprite = LeanRight;
+        }
+        else
+        {
+            GetComponent<SpriteRenderer>().sprite = Foward;
+        }
+    }
     private void HandleMovement()
     {
         velocity = HandleHorizontal(Input.GetAxis("Horizontal"));
@@ -111,6 +119,8 @@ public class PlayerController : MonoBehaviour
     {
         float newX = transform.position.x + (velocity.x * Speed * Time.deltaTime);
         float newY = transform.position.y + (velocity.y * Speed * Time.deltaTime);
+        newX = Mathf.Clamp(newX, Min.x, Max.x);
+        newY = Mathf.Clamp(newY, Min.y, Max.y);
         transform.position = new Vector2(newX, newY);
 
     }
