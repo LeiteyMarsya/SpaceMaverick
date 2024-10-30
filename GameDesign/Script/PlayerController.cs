@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [field: SerializeField]
+    public int LivesRemaining { get; private set; } = 3;
+
     [field: SerializeField]
     public Sprite LeanLeft { get; private set;}
     [field: SerializeField]
