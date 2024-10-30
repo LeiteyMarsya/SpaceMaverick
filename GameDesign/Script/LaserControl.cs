@@ -22,5 +22,14 @@ public class LaserControl : MonoBehaviour
         transform.position = new Vector2(newX, newY);
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        DestructableController destructable = collision.GetComponent<DestructableController>();
+        if (destructable != null)
+        {
+            destructable.DestroyObject(); // Assuming DestroyObject handles destruction and scoring
+            Destroy(gameObject); // Destroy the laser
+        }
+    }
 
 }
