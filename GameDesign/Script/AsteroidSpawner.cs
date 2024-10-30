@@ -5,15 +5,37 @@ using UnityEngine.UIElements;
 
 public class AsteroidSpawner : MonoBehaviour
 {
+    [field: SerializeField]
     public float SpawnRate = 2;
+
+    [field: SerializeField]
     public float LastSpawn = 0;
-    public float MinRotation = -90, MaxRotation = 90;
-    public Vector2 MinSpeed, MaxSpeed;
-    // Start is called before the first frame update
-    public Transform MinSpawnPoint, MaxSpawnPoint;
+
+    [field: SerializeField]
+    public float MinRotation { get; private set; } = -90;
+
+    [field: SerializeField]
+    public float MaxRotation { get; private set; } = 90;
+
+    [field: SerializeField]
+    public Vector2 MinSpeed;
+
+    [field: SerializeField]
+    public Vector2 MaxSpeed;
+
+    [field: SerializeField]
+    public Transform MinSpawnPoint;
+
+    [field: SerializeField]
+    public Transform MaxSpawnPoint;
+
     public Vector2 MinSpawnVector => MinSpawnPoint.position;
     public Vector2 MaxSpawnVector => MaxSpawnPoint.position;
+
+    [field: SerializeField]
     public AsteroidController Template;
+    public GameController GameController {  get; private set; }
+
     void Start()
     {
         LastSpawn = Time.time;
@@ -40,14 +62,25 @@ public class AsteroidSpawner : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        LaserControl laser = collision.gameObject.GetComponent<LaserControl>();
+        if (laser != null)
+        {
+            Destroy(this.gameObject);  // Destroy the asteroid
+            Destroy(laser.gameObject); // Optionally, destroy the laser as well
+            Debug.Log("Asteroid hit by laser!");
+        }
+    }
+
+
     private void SpawnAsteroid()
     {
-        Debug.Log("Asteroid Spawn Attempted");
-        AsteroidController ac = GameObject.Instantiate(Template);
+       float rotationSpeed = Random.Range(MinRotation, MaxRotation);
+        Vector2 speed = new Vector2(Random.Range(MinSpeed.x, MaxSpeed.x), Random.Range(MinSpeed.y, MaxSpeed.y));
+        AsteroidController ac = AsteroidController.Spawn(Template, rotationSpeed, speed, GameController);
         Vector2 spawnPoint = new(Random.Range(MinSpawnVector.x, MaxSpawnVector.x), MinSpawnVector.y);
         ac.transform.position = spawnPoint;
-        ac.RotationSpeed = Random.Range(MinRotation, MaxRotation);
-        ac.Speed = new(Random.Range(MinSpeed.x, MaxSpeed.x), Random.Range(MinSpeed.y, MaxSpeed.y));
         LastSpawn = Time.time;
     }
 
