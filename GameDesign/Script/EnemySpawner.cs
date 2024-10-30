@@ -10,6 +10,9 @@ public class EnemySpawner : MonoBehaviour
     [field: SerializeField]
     public List<EnemyShipController> EnemyQueue { get; private set; } = new();
 
+    [field: SerializeField]
+    public GameController GameController { get; set; }
+
     void Start()
     {
         // Check if EnemyQueue has elements before invoking SpawnNext()
@@ -25,7 +28,7 @@ public class EnemySpawner : MonoBehaviour
         {
             EnemyShipController enemy = EnemyQueue[0];
             EnemyQueue.RemoveAt(0);
-            EnemyShipController spawnedEnemy = EnemyShipController.Spawn(enemy);
+            EnemyShipController spawnedEnemy = EnemyShipController.Spawn(enemy, GameController);
             spawnedEnemy.transform.position = enemy.transform.position; // Set the correct position
             spawnedEnemy.SetWayPoints(enemy.WayPoints);
 
