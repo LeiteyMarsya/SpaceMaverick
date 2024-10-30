@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(DestructableController))]
 public class EnemyShipController : MonoBehaviour
 {
     [field: SerializeField]
@@ -31,15 +32,17 @@ public class EnemyShipController : MonoBehaviour
     [field:SerializeField]
     private bool isMovingHorizontal = true; // Flag to indicate horizontal or vertical movement
 
+
     void Start()
     {
         LastFire = Time.time + 1f;  // Delay firing by 1 second after spawning
     }
 
 
-    public static EnemyShipController Spawn(EnemyShipController enemy)
+    public static EnemyShipController Spawn(EnemyShipController enemy, GameController gameController)
     {
         EnemyShipController newEnemy = Instantiate(enemy);
+        newEnemy.GetComponent<DestructableController>().GameController = gameController;
         newEnemy.WayPoints = enemy.WayPoints;
         newEnemy.transform.position = enemy.transform.position;
         return newEnemy;
@@ -63,20 +66,8 @@ public class EnemyShipController : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        LaserControl asLaser = other.GetComponent<LaserControl>();
-        if (asLaser != null)
-        {
-            OnLaserHit(asLaser);
-        }
-    }
+    public static GameController gameController { get; private set; }
 
-    private void OnLaserHit(LaserControl laser)
-    {
-        Destroy(laser.gameObject);
-        Destroy(this.gameObject);
-    }
 
     // Update is called once per frame
     void Update()
