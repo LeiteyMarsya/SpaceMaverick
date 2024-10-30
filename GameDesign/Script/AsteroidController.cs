@@ -3,17 +3,31 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+[RequireComponent(typeof(DestructableController))]
 public class AsteroidController : MonoBehaviour
 {
-    public float RotationSpeed;
-    public Vector2 Speed;
-    public AsteroidController OnDestroyTemplate;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [field:SerializeField]
+    public float RotationSpeed { get; private set; }
 
+    [field:SerializeField]
+    public Vector2 Speed {  get; private set; }
+
+    [field: SerializeField]
+    private GameController GameController;
+
+    [field: SerializeField]
+    public GameObject onDestroyTemplate;
+
+
+    public static AsteroidController Spawn (AsteroidController template, float rotationSpeed, Vector2 speed, GameController gameController)
+    {
+        AsteroidController newAsteroid = Instantiate (template);
+        newAsteroid.GameController = gameController;
+        newAsteroid.GetComponent<DestructableController>().GameController = gameController;
+        newAsteroid.RotationSpeed = rotationSpeed;
+        newAsteroid.Speed = speed;
+        return newAsteroid;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -21,26 +35,18 @@ public class AsteroidController : MonoBehaviour
         MoveAsteroid();
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnDestroy()
     {
-        LaserControl asLaser = other.GetComponent<LaserControl>();
-        if (asLaser != null)
+        if (onDestroyTemplate != null)
         {
-            OnLaserHit(asLaser);
+            AsteroidController newObj = Spawn(onDestroyTemplate.GetComponent<AsteroidController>(), RotationSpeed, Speed, GameController);
+            newObj.transform.position = this.transform.position;
         }
     }
 
-    private void OnLaserHit(LaserControl Laser)
+    public void OnLaserHit(LaserController Laser, DestructableController destructable)
     {
-        Destroy(Laser.gameObject);
-        if (OnDestroyTemplate != null)
-        {
-            AsteroidController newObj = Instantiate(OnDestroyTemplate);
-            newObj.transform.position = this.transform.position;
-            newObj.RotationSpeed = RotationSpeed;
-            newObj.Speed = Speed;
-        }
-        Destroy(this.gameObject);
+        destructable.DefaultDestroy(Laser);
     }
 
     private void RotateAsteroid()
