@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
+    [field:SerializeField]
+    public UnityEvent<PlayerController> OnChange {  get; private set; }
+
     [field: SerializeField]
     public int LivesRemaining { get; private set; } = 3;
 
@@ -17,6 +21,24 @@ public class PlayerController : MonoBehaviour
 
     [field: SerializeField]
     public float DamageBoost { get; private set; } = 3;
+
+    public bool HasDamageBoost => DamageBoost > 0;
+    public bool IsVisible => !HasDamageBoost || Mathf.Sin(Time.time * 20) > 0;
+
+    [field: SerializeField]
+    private int _shieldPower = 0;
+    //The ship's shieldPower is a value between 0 and 5
+    public int ShieldPower
+    {
+        get => _shieldPower;
+
+        set
+        {
+            _shieldPower = Mathf.Clamp(value, 0, 5);
+            OnChange.Invoke(this);
+        }
+    }
+ 
 
     [field: SerializeField]
     public int Speed { get; private set; } = 5;
@@ -48,7 +70,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        // You can initialize any required variables here
+        OnChange.Invoke(this);
     }
 
     // Update is called once per frame
@@ -63,6 +85,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleDamageBoost()
     {
+        this.GetComponent<Renderer>().enabled = IsVisible;
         DamageBoost -= Time.deltaTime;
         DamageBoost = Mathf.Max(0, DamageBoost);
     }
@@ -73,7 +96,16 @@ public class PlayerController : MonoBehaviour
         PlayerImpactor asImpactor = collision.GetComponent<PlayerImpactor>();
         if (asImpactor != null && DamageBoost <= 0)
         {
-            GameController.DestroyPlayer(this); // Use the GameController instance
+            asImpactor.OnImpact(this);
+            if (ShieldPower <= 0)
+            {
+                GameController.DestroyPlayer(this);
+               
+            }
+            else
+            {
+                ShieldPower--;
+            }
         }
     }
 
