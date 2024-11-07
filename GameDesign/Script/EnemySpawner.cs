@@ -15,10 +15,9 @@ public class EnemySpawner : MonoBehaviour
 
     void Start()
     {
-        // Check if EnemyQueue has elements before invoking SpawnNext()
         if (EnemyQueue.Count > 0)
         {
-            this.InvokeRepeating(nameof(SpawnNext), SpawnRate, SpawnRate);
+            InvokeRepeating(nameof(SpawnNext), SpawnRate, SpawnRate);
         }
     }
 
@@ -30,12 +29,8 @@ public class EnemySpawner : MonoBehaviour
             EnemyQueue.RemoveAt(0);
             EnemyShipController spawnedEnemy = EnemyShipController.Spawn(enemy, GameController);
             spawnedEnemy.transform.position = enemy.transform.position; // Set the correct position
-            spawnedEnemy.SetWayPoints(enemy.WayPoints);
-
         }
     }
-
-
 
     public void EnqueueEnemies(List<EnemyShipController> enemies)
     {
@@ -44,5 +39,4 @@ public class EnemySpawner : MonoBehaviour
             EnemyQueue.Add(e);
         }
     }
-
 }
