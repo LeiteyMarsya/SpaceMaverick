@@ -5,34 +5,31 @@ using TMPro;
 
 public class GameController : MonoBehaviour
 {
-    [field: SerializeField] 
+    [field: SerializeField]
     public List<EnemyShipController> EnemyTypes { get; private set; }
 
-    [field: SerializeField] 
+    [field: SerializeField]
     public Transform EnemySpawnPoint { get; private set; }
 
-    [field: SerializeField] 
-    public List<Transform> WayPoints { get; set; }
-
-    [field: SerializeField] 
+    [field: SerializeField]
     public EnemySpawner EnemySpawner { get; private set; }
 
-    [field: SerializeField] 
+    [field: SerializeField]
     public PlayerController PlayerTemplate { get; private set; }
 
-    [field: SerializeField] 
+    [field: SerializeField]
     public Transform PlayerSpawnPoint { get; private set; }
 
-    [field: SerializeField] 
+    [field: SerializeField]
     public float SpawnDelay { get; private set; } = 3;
 
-    [field: SerializeField] 
+    [field: SerializeField]
     public float SpawnAt { get; private set; } = -1;
 
-    [field: SerializeField] 
+    [field: SerializeField]
     public List<EnemyShipController> enemies { get; private set; }
 
-    [field: SerializeField] 
+    [field: SerializeField]
     public static GameController Instance;
 
     [field: SerializeField] private int _score;
@@ -61,13 +58,13 @@ public class GameController : MonoBehaviour
         }
     }
 
-    [field: SerializeField] 
+    [field: SerializeField]
     public GameObject GameOverScreen { get; private set; }
 
-    [field: SerializeField] 
+    [field: SerializeField]
     private int highScore;
 
-    [field: SerializeField] 
+    [field: SerializeField]
     private TextMeshProUGUI highScoreText;
 
     void Start()
@@ -79,13 +76,6 @@ public class GameController : MonoBehaviour
         LoadHighScore();
         UpdateHighScoreText();
 
-        List<Transform> waypoints = new() { WayPoints[0], WayPoints[1], WayPoints[2] };
-        IEnemyShip enemy = new EnemyShip(EnemyTypes[0], waypoints, EnemySpawnPoint.position);
-
-        List<IEnemyShip> enemyShips = new()
-        {
-            enemy, enemy, enemy
-        };
         EnemySpawner.EnqueueEnemies(enemies);
     }
 
@@ -121,16 +111,10 @@ public class GameController : MonoBehaviour
 
     public void Restart()
     {
-        // Hide the game over screen
         GameOverScreen.SetActive(false);
-
-        // Reset the score
         Score = 0;
-
-        // Reset lives
         LivesRemaining = 3;
 
-        // Clear any remaining enemies, lasers, and asteroids
         foreach (var enemy in FindObjectsOfType<EnemyShipController>())
         {
             Destroy(enemy.gameObject);
@@ -146,13 +130,11 @@ public class GameController : MonoBehaviour
             Destroy(asteroid.gameObject);
         }
 
-        // Respawn the player
         SpawnPlayer();
     }
 
     private void Awake()
     {
-        // Set up singleton pattern
         if (Instance == null)
         {
             Instance = this;
