@@ -46,7 +46,7 @@ public class EnemySpawner : MonoBehaviour
         CancelInvoke(nameof(SpawnNext)); // Cancel any ongoing spawning
         EnemyQueue.Clear();              // Clear existing queue
 
-        // Re-enqueue enemies if necessary
+        // Re-enqueue enemies
         EnqueueEnemies(GameController.Instance.enemies);
 
         if (EnemyQueue.Count > 0)
