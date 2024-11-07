@@ -6,6 +6,9 @@ using TMPro;
 public class GameController : MonoBehaviour
 {
     [field: SerializeField]
+    public AsteroidSpawner AsteroidSpawner { get; private set; }
+
+    [field: SerializeField]
     public List<EnemyShipController> EnemyTypes { get; private set; }
 
     [field: SerializeField]
@@ -130,8 +133,18 @@ public class GameController : MonoBehaviour
             Destroy(asteroid.gameObject);
         }
 
+        // Reset enemy and asteroid spawners
+        EnemySpawner.ResetSpawner();
+        AsteroidSpawner.ResetSpawner();
+
+        // Re-enqueue all enemies
+        EnemySpawner.EnqueueEnemies(enemies);
+
+        // Spawn the player at the starting position
         SpawnPlayer();
     }
+
+
 
     private void Awake()
     {
