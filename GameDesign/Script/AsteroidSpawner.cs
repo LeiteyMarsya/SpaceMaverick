@@ -68,7 +68,7 @@ public class AsteroidSpawner : MonoBehaviour
         if (laser != null)
         {
             Destroy(this.gameObject);  // Destroy the asteroid
-            Destroy(laser.gameObject); // Optionally, destroy the laser as well
+            Destroy(laser.gameObject); 
             Debug.Log("Asteroid hit by laser!");
         }
     }
@@ -87,5 +87,10 @@ public class AsteroidSpawner : MonoBehaviour
     private bool ShouldSpawn()
     {
         return Time.time > (LastSpawn + SpawnRate);
+    }
+
+    public void ResetSpawner()
+    {
+        LastSpawn = Time.time;  // Reset spawn time
     }
 }
