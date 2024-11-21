@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 77a1ce6c3bd96524da64293cb9506971
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - <EnemySpawnPoint>k__BackingField: {instanceID: 0}
+  - <EnemySpawner>k__BackingField: {instanceID: 0}
+  - <PlayerTemplate>k__BackingField: {instanceID: 0}
+  - <PlayerSpawnPoint>k__BackingField: {fileID: 2578187658056930014, guid: 801eb7af4953a5142a3cf1cb442de981, type: 3}
+  - <GameOverScreen>k__BackingField: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
